@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirLibre - {% block title %}Activités de plein air{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- CSS personnalisé -->
+    <link href="{% static 'activities/css/style.css' %}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+
+
+
+<body>
+
+    <header>
+        {% block header %}
+        {% include 'partials/_navbar.html' %}
+        {% endblock %}
+    </header>
+
+
+
+    <main>
+
+        <!-- Hero Section conditionnelle - apparaît uniquement sur la page d'accueil -->
+        {% block hero %}{% endblock %}
+
+        <!-- Contenu principal -->
+        <div class="main-content">
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </main>
+
+
+
+
+    {% block footer %}
+    {% include 'partials/_footer.html' %}
+    {% endblock %}
+
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- JS personnalisé -->
+    <script src="{% static 'activities/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+
+</html>

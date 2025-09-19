@@ -1,0 +1,948 @@
+// Variables SCSS
+$primary-green: #2d5a27;
+$light-green: #4a7c59;
+$accent-orange: #ff6b35;
+$sky-blue: #87ceeb;
+$earth-brown: #8b4513;
+$soft-white: #fafafa;
+$shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin hover-transform($y: -5px) {
+    transform: translateY($y);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+@mixin gradient-text($direction: 45deg, $color1: $primary-green, $color2: $light-green) {
+    background: linear-gradient($direction, $color1, $color2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+// Animations
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) rotate(180deg);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes particle-float {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+// Reset
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+// Base styles
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+
+}
+
+// Navbar styles
+.navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: $shadow;
+    transition: all 0.3s ease;
+
+    &.scrolled {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(15px);
+    }
+}
+
+.navbar-brand {
+    font-size: 2rem;
+    font-weight: bold;
+    @include gradient-text(45deg, $primary-green, $light-green);
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: scale(1.05);
+        filter: brightness(1.2);
+    }
+}
+
+.nav-link {
+    color: $primary-green !important;
+    font-weight: 500;
+    margin: 0 10px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:hover {
+        color: $accent-orange !important;
+        transform: translateY(-2px);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(45deg, $accent-orange, $light-green);
+        transition: left 0.3s ease;
+    }
+
+    &:hover::after {
+        left: 0;
+    }
+}
+
+.btn-outline-success {
+    border-color: $light-green;
+    color: $light-green;
+    border-radius: 25px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+        background: $light-green;
+        border-color: $light-green;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(74, 124, 89, 0.3);
+    }
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid $light-green;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(74, 124, 89, 0.5);
+    }
+}
+
+// Hero section
+.hero-section {
+    background: linear-gradient(135deg, rgba(45, 90, 39, 0.9), rgba(74, 124, 89, 0.8)),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23667eea"/><stop offset="100%" stop-color="%23764ba2"/></radialGradient></defs><rect fill="url(%23a)" width="100%" height="100%"/><g fill="%23ffffff" opacity="0.1"><circle r="50" cx="200" cy="200"/><circle r="30" cx="800" cy="300"/><circle r="40" cx="600" cy="700"/></g></svg>');
+    color: white;
+    padding: 150px 0 100px;
+    position: relative;
+    overflow: hidden;
+
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.03) 10px,
+                rgba(255, 255, 255, 0.03) 20px);
+        animation: float 20s ease-in-out infinite;
+    }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    animation: slideInUp 1s ease-out;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    animation: slideInUp 1s ease-out 0.2s both;
+}
+
+// Main content
+.main-content {
+    margin-top: -50px;
+    position: relative;
+    z-index: 3;
+}
+
+// Filters card
+.filters-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: $shadow;
+    transition: all 0.3s ease;
+
+    &:hover {
+        @include hover-transform(-5px);
+    }
+}
+
+.filter-tabs {
+    margin-bottom: 1.5rem;
+}
+
+.filter-tab {
+    background: transparent;
+    border: 2px solid $light-green;
+    color: $light-green;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover,
+    &.active {
+        background: $light-green;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(74, 124, 89, 0.3);
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.3s ease;
+    }
+
+    &:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+.form-select {
+    border-radius: 15px;
+    border: 2px solid #e0e0e0;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+
+    &:focus {
+        border-color: $light-green;
+        box-shadow: 0 0 0 0.2rem rgba(74, 124, 89, 0.25);
+    }
+}
+
+// Activity cards
+.activity-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: $shadow;
+    transition: all 0.3s ease;
+    position: relative;
+    margin-bottom: 2rem;
+
+    &:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+
+        .card-header::after {
+            right: -50px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        &::before {
+            left: 100%;
+        }
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.6s ease;
+        z-index: 1;
+    }
+}
+
+.card-header {
+    background: linear-gradient(135deg, $primary-green, $light-green);
+    color: white;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20px;
+        width: 100px;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(25deg);
+        transition: all 0.3s ease;
+    }
+}
+
+.activity-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.activity-meta {
+    position: relative;
+    z-index: 2;
+    opacity: 0.9;
+}
+
+.card-body {
+    padding: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.badge {
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+
+    &-primary {
+        background: linear-gradient(45deg, $accent-orange, #ff8c35);
+    }
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateX(5px);
+
+        .info-icon {
+            transform: rotate(360deg);
+            box-shadow: 0 0 20px rgba(74, 124, 89, 0.4);
+        }
+    }
+}
+
+.info-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, $light-green, $primary-green);
+    border-radius: 50%;
+    @include flex-center;
+    color: white;
+    margin-right: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-details {
+    background: linear-gradient(45deg, $accent-orange, #ff8c35);
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        color: white;
+
+        &::before {
+            left: 100%;
+        }
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.6s ease;
+    }
+}
+
+// Pagination
+.pagination {
+    justify-content: center;
+    margin: 3rem 0;
+}
+
+.page-link {
+    border: none;
+    background: white;
+    color: $primary-green;
+    margin: 0 5px;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    @include flex-center;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: $light-green;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(74, 124, 89, 0.3);
+    }
+}
+
+.page-item.active .page-link {
+    background: $light-green;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(74, 124, 89, 0.3);
+}
+
+// Animations
+.fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+// Particle effects
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: particle-float 6s infinite ease-in-out;
+}
+
+// Media queries
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .filters-card {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .filter-tab {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+// Login Page Styles
+.login-container {
+    min-height: calc(100vh - 76px);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    .login-card {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: $shadow;
+        background-color: $soft-white;
+    }
+
+    .login-left {
+        padding: 3rem;
+    }
+
+    .login-right {
+        background-color: #f5f5f5;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    .login-logo {
+        margin-bottom: 2rem;
+    }
+
+    .login-heading {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: $primary-green;
+    }
+
+    .login-form {
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            margin-bottom: 1rem;
+
+            &:focus {
+                box-shadow: 0 0 0 0.25rem rgba($primary-green, 0.25);
+                border-color: $primary-green;
+            }
+        }
+    }
+
+    .login-btn {
+        background-color: $primary-green;
+        border: none;
+        border-radius: 8px;
+        padding: 12px;
+        font-weight: 500;
+        transition: all 0.3s;
+        width: 100%;
+
+        &:hover,
+        &:focus {
+            background-color: $light-green;
+            transform: translateY(-2px);
+        }
+    }
+
+    .login-links {
+        text-align: center;
+        margin-top: 2rem;
+
+        a {
+            color: $primary-green;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+
+            &:hover {
+                color: $light-green;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .login-separator {
+        display: flex;
+        align-items: center;
+        margin: 1.5rem 0;
+
+        hr {
+            flex: 1;
+            border-top: 1px solid #dee2e6;
+        }
+
+        span {
+            padding: 0 1rem;
+            color: #6c757d;
+        }
+    }
+
+    .login-illustration {
+        max-width: 80%;
+        height: auto;
+    }
+
+    .login-welcome {
+        font-size: 1.5rem;
+        margin: 1.5rem 0;
+        color: $primary-green;
+        font-weight: 500;
+    }
+
+    .login-description {
+        color: #6c757d;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 991.98px) {
+        .login-right {
+            display: none;
+        }
+    }
+}
+
+// Styles pour la page activities_liste
+.activities-liste-container {
+    padding-bottom: 3rem;
+
+    // En-tête avec bannière
+    .activities-header {
+        background-color: $primary-green;
+        background-image: linear-gradient(135deg, $primary-green, $light-green);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 1rem 1rem;
+        box-shadow: $shadow;
+
+        h1 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .btn-success {
+            background-color: white;
+            color: $primary-green;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s;
+
+            &:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                background-color: $soft-white;
+            }
+        }
+    }
+
+    // Carte des filtres
+    .activities-filters-card {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: $shadow;
+        margin-bottom: 2rem;
+
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            border: 1px solid #e0e0e0;
+
+            &:focus {
+                border-color: $primary-green;
+                box-shadow: 0 0 0 0.25rem rgba($primary-green, 0.25);
+            }
+        }
+
+        .btn-filter {
+            background-color: $primary-green;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+
+            &:hover {
+                background-color: darken($primary-green, 10%);
+            }
+        }
+    }
+
+    // Statistiques
+    .activities-stats {
+        margin-bottom: 2.5rem;
+
+        .stat-item {
+            padding: 1.5rem 0.5rem;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: $shadow;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+
+            &:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            i {
+                font-size: 2rem;
+                color: $primary-green;
+                margin-bottom: 0.5rem;
+            }
+
+            h3 {
+                font-weight: 700;
+                font-size: 1.8rem;
+                color: $primary-green;
+                margin-bottom: 0.25rem;
+            }
+
+            p {
+                color: #555;
+                margin-bottom: 0;
+                font-weight: 500;
+            }
+        }
+    }
+
+    // Titre de section
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $primary-green;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid $light-green;
+        display: inline-block;
+    }
+
+    // Cartes d'activités
+    .activity-card {
+        background-color: white;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: $shadow;
+        margin-bottom: 2rem;
+        transition: all 0.3s;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .activity-card-header {
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+
+            .activity-category {
+                display: inline-block;
+                background-color: rgba(255, 255, 255, 0.2);
+                padding: 0.25rem 0.75rem;
+                border-radius: 1rem;
+                font-size: 0.8rem;
+                font-weight: 600;
+                margin-bottom: 0.75rem;
+            }
+
+            .activity-title {
+                font-size: 1.4rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+            }
+
+            .activity-meta {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.9rem;
+
+                .activity-date, .activity-time {
+                    display: flex;
+                    align-items: center;
+
+                    i {
+                        margin-right: 0.25rem;
+                    }
+                }
+            }
+        }
+
+        .activity-card-body {
+            padding: 1.5rem;
+
+            .activity-description {
+                color: #555;
+                margin-bottom: 1.25rem;
+                line-height: 1.5;
+            }
+
+            .activity-info {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 1.25rem;
+
+                .info-item {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 0.5rem;
+                    color: #555;
+
+                    i {
+                        width: 1.5rem;
+                        color: $primary-green;
+                        margin-right: 0.5rem;
+                    }
+                }
+            }
+
+            .activity-footer {
+                display: flex;
+                justify-content: space-between;
+
+                .btn {
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.5rem;
+                    font-weight: 500;
+                    transition: all 0.3s;
+                }
+
+                .btn-details {
+                    background-color: transparent;
+                    color: $primary-green;
+                    border: 1px solid $primary-green;
+
+                    &:hover {
+                        background-color: $primary-green;
+                        color: white;
+                    }
+                }
+
+                .btn-participate {
+                    background-color: $primary-green;
+                    color: white;
+                    border: none;
+
+                    &:hover {
+                        background-color: darken($primary-green, 10%);
+                    }
+                }
+            }
+        }
+    }
+
+    // Carte "pas d'activités"
+    .no-activities-card {
+        background-color: white;
+        border-radius: 1rem;
+        padding: 3rem;
+        text-align: center;
+        box-shadow: $shadow;
+        margin-bottom: 2rem;
+
+        i {
+            color: $primary-green;
+            opacity: 0.7;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+            color: $primary-green;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    // Pagination
+    .pagination {
+        .page-link {
+            color: $primary-green;
+            border-radius: 0.5rem;
+            margin: 0 0.25rem;
+            border: none;
+            width: 40px;
+            height: 40px;
+            @include flex-center;
+            transition: all 0.3s;
+
+            &:hover {
+                background-color: rgba($primary-green, 0.1);
+                color: $primary-green;
+            }
+        }
+
+        .page-item.active .page-link {
+            background-color: $primary-green;
+            color: white;
+        }
+
+        .page-item.disabled .page-link {
+            color: #ccc;
+        }
+    }
+}

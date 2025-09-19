@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ activity.name }} - AirLibre{% endblock %}
+
+{% block content %}
+<div class="filters-card fade-in-up">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-success"><i
+                        class="fas fa-list me-1"></i>Activités</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ activity.name }}</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="activity-card fade-in-up">
+    <div class="card-header">
+        <h1 class="activity-title">
+            <i class="fas fa-mountain me-2"></i>
+            {{ activity.name }}
+        </h1>
+        <div class="activity-meta">
+            <span class="badge badge-primary">Activité de plein air</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mb-4">
+                    <h3 class="mb-3"><i class="fas fa-info-circle me-2 text-success"></i>Description</h3>
+                    <p class="lead">{{ activity.description }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="mb-3"><i class="fas fa-clipboard-list me-2 text-success"></i>Détails de l'activité</h3>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <strong>Lieu:</strong><br>
+                                    {{ activity.location }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <strong>Durée:</strong><br>
+                                    {{ activity.duration }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-hiking"></i>
+                                </div>
+                                <div>
+                                    <strong>Difficulté:</strong><br>
+                                    {{ activity.difficulty }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div>
+                                    <strong>Groupe:</strong><br>
+                                    12 personnes maximum
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="mb-3"><i class="fas fa-check-circle me-2 text-success"></i>Ce qui est inclus</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Encadrement par un guide
+                            professionnel</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Équipement de sécurité</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Collation énergétique</li>
+                        <li class="mb-2"><i class="fas fa-times text-danger me-2"></i>Transport jusqu'au lieu de départ
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="filters-card">
+                    <div class="text-center mb-3">
+                        <h3 class="mb-3">Réserver cette activité</h3>
+                        <h2 class="display-4 mb-3">{{ activity.price }} €</h2>
+                        <p class="text-muted mb-4">par personne</p>
+
+                        <button class="btn btn-details w-100 mb-3">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            Réserver maintenant
+                        </button>
+
+                        <button class="btn btn-outline-success w-100">
+                            <i class="far fa-heart me-2"></i>
+                            Ajouter aux favoris
+                        </button>
+                    </div>
+
+                    <hr>
+
+                    <div class="mt-3">
+                        <h5><i class="fas fa-share-alt me-2"></i>Partager</h5>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="mx-2"><i class="fab fa-facebook fa-2x text-primary"></i></a>
+                            <a href="#" class="mx-2"><i class="fab fa-twitter fa-2x text-info"></i></a>
+                            <a href="#" class="mx-2"><i class="fab fa-whatsapp fa-2x text-success"></i></a>
+                            <a href="#" class="mx-2"><i class="fab fa-pinterest fa-2x text-danger"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filters-card mt-4">
+                    <h5><i class="fas fa-question-circle me-2"></i>Besoin d'aide ?</h5>
+                    <p class="small">Pour toute question concernant cette activité, n'hésitez pas à nous contacter.</p>
+                    <a href="#" class="btn btn-sm btn-outline-success w-100">
+                        <i class="fas fa-envelope me-2"></i>
+                        Contactez-nous
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activités similaires -->
+<div class="mt-5">
+    <h3 class="mb-4"><i class="fas fa-compass me-2"></i>Activités similaires</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="activity-card fade-in-up">
+                <div class="card-header">
+                    <h3 class="activity-title">Randonnée au Mont-Tremblant</h3>
+                </div>
+                <div class="card-body">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div>
+                            <strong>Prix:</strong> 50 €
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="#" class="btn btn-details btn-sm">
+                            <i class="fas fa-eye me-2"></i>
+                            Voir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="activity-card fade-in-up">
+                <div class="card-header">
+                    <h3 class="activity-title">Escalade en falaise</h3>
+                </div>
+                <div class="card-body">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div>
+                            <strong>Prix:</strong> 65 €
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="#" class="btn btn-details btn-sm">
+                            <i class="fas fa-eye me-2"></i>
+                            Voir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="activity-card fade-in-up">
+                <div class="card-header">
+                    <h3 class="activity-title">Randonnée nocturne</h3>
+                </div>
+                <div class="card-body">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div>
+                            <strong>Prix:</strong> 40 €
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="#" class="btn btn-details btn-sm">
+                            <i class="fas fa-eye me-2"></i>
+                            Voir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
