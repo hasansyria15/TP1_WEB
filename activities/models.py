@@ -69,11 +69,11 @@ class Activity(models.Model):
         )
     location_city = models.CharField(
             verbose_name="Ville",
+            max_length=100,
             validators=[
                 MinLengthValidator(2, "La ville doit contenir au moins 2 caractères."),
                 MaxLengthValidator(100, "La ville doit contenir au plus 100 caractères.")
             ]
-
         )
     start_time = models.DateTimeField(
             verbose_name="Heure de début",

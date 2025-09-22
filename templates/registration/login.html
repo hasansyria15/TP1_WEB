@@ -1,4 +1,4 @@
-
+{% extends "base.html" %}
 {% block title %}Connexion{% endblock %}
 
 {% block content %}
@@ -23,6 +23,19 @@
                             {% if form.username.errors %}
                             <div class="invalid-feedback d-block">
                                 {{ form.username.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <!-- Affichage explicite du champ password -->
+                        <div class="mb-3 test-ooage">
+                            <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                            {{ form.password }}
+                            {% if form.password.help_text %}
+                            <small class="form-text text-muted">{{ form.password.help_text }}</small>
+                            {% endif %}
+                            {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.password.errors }}
                             </div>
                             {% endif %}
                         </div>

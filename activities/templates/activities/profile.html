@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mon Profil - AirLibre{% endblock %}
+
+{% block content %}
+<div class="profile-container fade-in-up">
+    <div class="row">
+        <!-- Colonne de gauche : Informations du profil -->
+        <div class="col-lg-4">
+            <div class="profile-sidebar filters-card">
+                <div class="text-center mb-4">
+                    <div class="profile-avatar-container">
+                        <div class="profile-avatar-icon" >
+                            <i class="fas fa-user-circle" ></i>
+                        </div>
+                    </div>
+                    <h3 class="profile-name mt-3">John Doe</h3>
+                    <p class="text-muted">Membre depuis Septembre 2023</p>
+                </div>
+                
+                <div class="profile-info">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <strong>Courriel:</strong><br>
+                            johndoe@example.com
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <strong>Nom complet:</strong><br>
+                            John Doe
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Localisation:</strong><br>
+                            Montréal, QC
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-bio mt-4">
+                    <h5><i class="fas fa-quote-left me-2 text-success"></i>Biographie</h5>
+                    <p class="mt-2">
+                        Passionné de plein air et d'activités en nature. J'adore la randonnée, le camping et l'escalade. Toujours prêt pour une nouvelle aventure!
+                    </p>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'edit_profile' %}" class="btn btn-details w-100">
+                        <i class="fas fa-edit me-2"></i>
+                        Modifier mon profil
+                    </a>
+                </div>
+            </div>
+
+            <div class="filters-card mt-4">
+                <h5><i class="fas fa-chart-line me-2 text-success"></i>Statistiques</h5>
+                
+                <div class="row text-center mt-3">
+                    <div class="col-4">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Activités</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Inscriptions</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-number">4.8</div>
+                        <div class="stat-label">Évaluation</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colonne de droite : Activités et inscriptions -->
+        <div class="col-lg-8">
+            <!-- Activités créées -->
+            <div class="filters-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4><i class="fas fa-mountain me-2 text-success"></i>Mes Activités</h4>
+                    <a href="#" class="btn btn-sm btn-outline-success">
+                        <i class="fas fa-plus me-2"></i>Créer une activité
+                    </a>
+                </div>
+
+                <div class="row">
+                    <!-- Activité 1 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="activity-card h-100">
+                            <div class="card-header">
+                                <h3 class="activity-title">Randonnée au Mont Royal</h3>
+                                <div class="activity-meta">
+                                    <span class="badge badge-primary">Randonnée</span>
+                                    <span class="badge bg-success ms-2">Actif</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Date:</strong><br>
+                                        15 octobre 2025
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Participants:</strong><br>
+                                        5/12
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="#" class="btn btn-details btn-sm">
+                                        <i class="fas fa-eye me-2"></i>Voir détails
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activité 2 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="activity-card h-100">
+                            <div class="card-header">
+                                <h3 class="activity-title">Kayak au Lac Saint-Louis</h3>
+                                <div class="activity-meta">
+                                    <span class="badge badge-primary">Kayak</span>
+                                    <span class="badge bg-secondary ms-2">Passé</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Date:</strong><br>
+                                        20 août 2025
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Participants:</strong><br>
+                                        8/8
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="#" class="btn btn-details btn-sm">
+                                        <i class="fas fa-eye me-2"></i>Voir détails
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-2">
+                    <a href="#" class="btn btn-link text-success">Voir toutes mes activités <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+
+            <!-- Inscriptions -->
+            <div class="filters-card mt-4">
+                <h4 class="mb-4"><i class="fas fa-ticket-alt me-2 text-success"></i>Mes Inscriptions</h4>
+                
+                <div class="row">
+                    <!-- Inscription 1 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="activity-card h-100">
+                            <div class="card-header">
+                                <h3 class="activity-title">Camping au Parc national du Mont-Tremblant</h3>
+                                <div class="activity-meta">
+                                    <span class="badge badge-primary">Camping</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Date:</strong><br>
+                                        22-25 octobre 2025
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Organisateur:</strong><br>
+                                        Marie Dubois
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="#" class="btn btn-details btn-sm">
+                                        <i class="fas fa-eye me-2"></i>Voir détails
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inscription 2 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="activity-card h-100">
+                            <div class="card-header">
+                                <h3 class="activity-title">Cours d'escalade en salle</h3>
+                                <div class="activity-meta">
+                                    <span class="badge badge-primary">Escalade</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Date:</strong><br>
+                                        Chaque mardi à 18h
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Organisateur:</strong><br>
+                                        Jean Tremblay
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="#" class="btn btn-details btn-sm">
+                                        <i class="fas fa-eye me-2"></i>Voir détails
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-2">
+                    <a href="#" class="btn btn-link text-success">Voir toutes mes inscriptions <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

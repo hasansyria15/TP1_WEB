@@ -4,12 +4,12 @@
 {% block title %}{{ activity.name }} - AirLibre{% endblock %}
 
 {% block content %}
-<div class="filters-card fade-in-up">
+<div class="filters-card fade-in-up activity-detail-breadcrumb mt-5">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-success"><i
                         class="fas fa-list me-1"></i>Activités</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ activity.name }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ activity.title }}</li>
         </ol>
     </nav>
 </div>
@@ -18,10 +18,10 @@
     <div class="card-header">
         <h1 class="activity-title">
             <i class="fas fa-mountain me-2"></i>
-            {{ activity.name }}
+            {{ activity.title }}
         </h1>
         <div class="activity-meta">
-            <span class="badge badge-primary">Activité de plein air</span>
+            <span class="badge badge-primary">{{ activity.category }}</span>
         </div>
     </div>
     <div class="card-body">
@@ -43,7 +43,7 @@
                                 </div>
                                 <div>
                                     <strong>Lieu:</strong><br>
-                                    {{ activity.location }}
+                                    {{ activity.location_city }}
                                 </div>
                             </div>
                         </div>
@@ -54,8 +54,8 @@
                                     <i class="fas fa-clock"></i>
                                 </div>
                                 <div>
-                                    <strong>Durée:</strong><br>
-                                    {{ activity.duration }}
+                                    <strong>Date de début:</strong><br>
+                                    {{ activity.start_time }}
                                 </div>
                             </div>
                         </div>
@@ -66,8 +66,8 @@
                                     <i class="fas fa-hiking"></i>
                                 </div>
                                 <div>
-                                    <strong>Difficulté:</strong><br>
-                                    {{ activity.difficulty }}
+                                    <strong>Date de fin:</strong><br>
+                                    {{ activity.end_time }}
                                 </div>
                             </div>
                         </div>
@@ -78,8 +78,8 @@
                                     <i class="fas fa-users"></i>
                                 </div>
                                 <div>
-                                    <strong>Groupe:</strong><br>
-                                    12 personnes maximum
+                                    <strong>Nombre de participants:</strong><br>
+                                    {{ participant_count }}
                                 </div>
                             </div>
                         </div>
@@ -87,14 +87,11 @@
                 </div>
 
                 <div class="mb-4">
-                    <h3 class="mb-3"><i class="fas fa-check-circle me-2 text-success"></i>Ce qui est inclus</h3>
+                    <h3 class="mb-3"><i class="fas fa-check-circle me-2 text-success"></i>Les participants</h3>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Encadrement par un guide
-                            professionnel</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Équipement de sécurité</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Collation énergétique</li>
-                        <li class="mb-2"><i class="fas fa-times text-danger me-2"></i>Transport jusqu'au lieu de départ
-                        </li>
+                        {% for a in activity.attendees.all %}
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>{{ a.username }}</li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -103,18 +100,13 @@
                 <div class="filters-card">
                     <div class="text-center mb-3">
                         <h3 class="mb-3">Réserver cette activité</h3>
-                        <h2 class="display-4 mb-3">{{ activity.price }} €</h2>
-                        <p class="text-muted mb-4">par personne</p>
 
                         <button class="btn btn-details w-100 mb-3">
                             <i class="fas fa-shopping-cart me-2"></i>
                             Réserver maintenant
                         </button>
 
-                        <button class="btn btn-outline-success w-100">
-                            <i class="far fa-heart me-2"></i>
-                            Ajouter aux favoris
-                        </button>
+                        
                     </div>
 
                     <hr>

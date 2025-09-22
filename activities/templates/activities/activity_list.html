@@ -10,7 +10,7 @@
         <div class="hero-content text-center">
             <h1 class="hero-title">
                 <i class="fas fa-hiking me-3"></i>
-                Nos Activités de Plein Air
+                Nos Activités à venir
             </h1>
             <p class="hero-subtitle">
                 Découvrez notre sélection d'aventures en nature
@@ -30,17 +30,33 @@
 
     <!-- Filtre par catégorie -->
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <select class="form-select">
-                <option value="">Toutes les catégories</option>
-                <option value="randonnee">🥾 Randonnée</option>
-                <option value="velo">🚵‍♂️ Vélo de montagne</option>
-                <option value="escalade">🧗‍♀️ Escalade</option>
-                <option value="kayak">🛶 Kayak</option>
-            </select>
+        <div class="col-md-6 mb-4">
+            <form class="category-filter-form">
+                <div class="mb-3 d-flex align-items-center justify-content-space-between">
+                    <label for="{{ form.category.id_for_label }}" class="me-3">{{ form.category.label }}:</label>
+                    {{ form.category }}
+                </div>
+
+                <div class="action-buttons ms-3">
+                    <button type="submit" name="scoop" value="all"
+                            class="btn btn-details me-2 {% if scoop == 'all' %}active{% endif %}">
+                        <i class="fas fa-list-ul me-1"></i> Toutes
+                    </button>
+                    <button type="submit" name="scoop" value="mine"
+                            class="btn btn-details me-2 {% if scoop == 'mine' %}active{% endif %}">
+                        <i class="fas fa-user-cog me-1"></i> Mes activités
+                    </button>
+                    <button type="submit" name="scoop" value="inscrit"
+                            class="btn btn-details {% if scoop == 'inscrit' %}active{% endif %}">
+                        <i class="fas fa-user-check me-1"></i> Je suis inscrit
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+
 
 <!-- Liste des activités -->
 <div class="row">
@@ -58,7 +74,16 @@
                 </div>
             </div>
             <div class="card-body">
-                <p>{{ activity.description }}</p>
+               
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                        <strong>Lieu:</strong> {{ activity.location_city }}
+                    </div>
+                </div>
 
                 <div class="info-item">
                     <div class="info-icon">
