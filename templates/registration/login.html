@@ -1,57 +1,113 @@
+<!-- Template de connexion utilisateur pour l'application AirLibre -->
+<!-- Hérite du template de base (base.html) pour la structure commune -->
 {% extends "base.html" %}
 {% block title %}Connexion{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="text-center">Connexion</h3>
-                </div>
-                <div class="card-body">
-                    <form action="" method="POST">
-                        {% csrf_token %}
+<!-- Section principale de la page de connexion avec classe CSS spécifique -->
+<section class="page-connexion">
 
-                        <!-- Affichage explicite du champ username -->
-                        <div class="mb-3 test-ooage">
-                            <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-                            {{ form.username }}
-                            {% if form.username.help_text %}
-                            <small class="form-text text-muted">{{ form.username.help_text }}</small>
-                            {% endif %}
-                            {% if form.username.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.username.errors }}
+    <!-- Container Bootstrap avec espacement supérieur et centrage -->
+    <div class="container mt-5">
+        <!-- Ligne centrée horizontalement -->
+        <div class="row justify-content-center">
+            <!-- Colonne responsive : 6/12 sur écrans moyens et plus grands -->
+            <div class="col-md-6">
+                <!-- Carte Bootstrap pour un design professionnel -->
+                <div class="card">
+                    <!-- En-tête de la carte avec couleur primaire -->
+                    <div class="card-header bg-primary text-white">
+                        <!-- Titre principal de la page avec ID pour l'accessibilité -->
+                        <h1 id="login-title" class="text-center">Connexion</h1>
+                    </div>
+                    <!-- Corps de la carte contenant le formulaire -->
+                    <div class="card-body">
+                        <!-- Formulaire de connexion avec méthode POST sécurisée -->
+                        <form action="" method="POST" novalidate aria-describedby="login-description">
+                            {% csrf_token %}
+
+                            <!-- Description cachée du formulaire pour les lecteurs d'écran -->
+                            <div id="login-description" class="sr-only">
+                                Formulaire de connexion à votre compte AirLibre. Saisissez votre nom d'utilisateur et
+                                mot de passe.
+                            </div>
+
+                            <!-- Affichage des erreurs globales du formulaire -->
+                            {% if form.non_field_errors %}
+                            <!-- Alerte d'erreur avec accessibilité complète -->
+                            <div class="alert alert-danger" role="alert" aria-live="polite">
+                                <strong>Erreur de connexion :</strong>
+                                {% for error in form.non_field_errors %}
+                                {{ error }}
+                                {% endfor %}
                             </div>
                             {% endif %}
-                        </div>
-                        <!-- Affichage explicite du champ password -->
-                        <div class="mb-3 test-ooage">
-                            <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
-                            {{ form.password }}
-                            {% if form.password.help_text %}
-                            <small class="form-text text-muted">{{ form.password.help_text }}</small>
-                            {% endif %}
-                            {% if form.password.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.password.errors }}
+
+                            <!-- Affichage explicite du champ username -->
+                            <div class="mb-3 test-ooage">
+                                <!-- Label associé au champ nom d'utilisateur -->
+                                <label for="{{ form.username.id_for_label }}" class="required">
+                                    {{ form.username.label }}
+                                </label>
+
+                                <!-- Input nom d'utilisateur -->
+                                {{ form.username }}
+                                <!-- Messages d'erreur spécifiques au champ username -->
+                                {% if form.username.errors %}
+                                <!-- Container d'erreur avec accessibilité complète -->
+                                <div class="invalid-feedback d-block" role="alert"
+                                    id="{{ form.username.id_for_label }}-error" aria-live="polite">
+                                    {% for error in form.username.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
                             </div>
-                            {% endif %}
+
+                            <!-- Affichage explicite du champ password -->
+
+                            <div class="mb-3 test-ooage">
+
+                                <label for="{{ form.password.id_for_label }}" class="required">
+                                    {{ form.password.label }}
+                                </label>
+                                {{ form.password }}
+
+                                <!-- Messages d'erreur spécifiques au champ password -->
+                                {% if form.password.errors %}
+                                <!-- Container d'erreur avec accessibilité -->
+                                <div class="invalid-feedback d-block" role="alert"
+                                    id="{{ form.password.id_for_label }}-error" aria-live="polite">
+                                    {% for error in form.password.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Bouton de soumission du formulaire -->
+                            <button type="submit" class="btn btn-primary" aria-describedby="submit-help">
+                                <i class="fas fa-sign-in-alt me-2" aria-hidden="true"></i>Se connecter
+                            </button>
+                            <!-- Texte d'aide caché pour le bouton (lecteurs d'écran) -->
+                            <div id="submit-help" class="sr-only">
+                                Cliquez pour vous connecter à votre compte AirLibre
+                            </div>
+                        </form>
+                        <!-- Section lien d'inscription -->
+                        <div class="mt-3 test-ooage">
+                            <p class="testtext">
+                                Vous n'avez pas de compte ?
+                                <!-- Lien vers la page d'inscription avec label accessible -->
+                                <a href="{% url 'signup' %}" aria-label="Créer un nouveau compte AirLibre">
+                                    Inscrivez-vous ici
+                                </a>
+                            </p>
                         </div>
-
-
-
-                        <button type="submit" class="btn btn-primary">Se connecter</button>
-                    </form>
-                    <div class="mt-3 test-ooage">
-                        <p class="testtext">Vous n'avez pas de compte ? <a href="">Inscrivez-vous
-                                ici</a></p>
-
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+</section> <!-- Fin de la section page-connexion -->
+
 {% endblock %}

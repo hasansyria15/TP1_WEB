@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" class="error-400">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur 400 - Requête invalide | AirLibre</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Styles personnalisés avec paramètre de version pour éviter le cache -->
+    <link href="{% static 'activities/css/style.css' %}?v={% now 'U' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Conteneur principal de la page d'erreur -->
+    <div class="error-container">
+        <!-- Carte principale contenant le message d'erreur -->
+        <div class="error-card">
+            <!-- Icône d'erreur -->
+            <i class="fas fa-exclamation-triangle error-icon" aria-hidden="true"></i>
+
+            <!-- Code d'erreur -->
+            <div class="error-code" aria-label="Code d'erreur 400">400</div>
+
+            <!-- Titre principal -->
+            <h1 class="error-title">Requête mal formée</h1>
+
+            <!-- Description de l'erreur -->
+            <p class="error-description">
+                La requête que vous avez envoyée contient des erreurs ou des paramètres invalides.
+                Veuillez vérifier les informations saisies et réessayer.
+            </p>
+
+            <!-- Détails de l'exception si disponible -->
+            {% if exception %}
+            <div class="error-details" role="alert">
+                <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
+                <strong>Détails :</strong> {{ exception }}
+            </div>
+            {% endif %}
+
+            <!-- Boutons d'action -->
+            <div class="error-actions">
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-home me-2" aria-hidden="true"></i>
+                    Retour à l'accueil
+                </a>
+                <button onclick="history.back();" class="btn btn-outline-primary" type="button">
+                    <i class="fas fa-arrow-left me-2" aria-hidden="true"></i>
+                    Page précédente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

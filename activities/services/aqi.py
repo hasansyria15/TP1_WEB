@@ -39,3 +39,4 @@ def get_air_quality(city=None):
         raise ValueError(f"Erreur de décodage JSON: {e}") from e
     except Exception as e:
         raise ValueError(f"Erreur inattendue lors de la récupération des données AQI: {e}") from e
+

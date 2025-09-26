@@ -1,52 +1,79 @@
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg">
+<!-- Navigation principale -->
+<nav class="navbar navbar-expand-lg" role="navigation" aria-label="Navigation principale" id="navigation">
     <div class="container">
-        <a class="navbar-brand" href="/">
-            <i class="fas fa-mountain me-2"></i>AirLibre
+        <a class="navbar-brand" href="/" aria-label="AirLibre - Retour à l'accueil">
+            <i class="fas fa-mountain me-2" aria-hidden="true"></i>AirLibre
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+        <!--Button de collapse pour le menu de navigation-->
+        {% if user.is_authenticated %}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Afficher/Masquer le menu de navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        {% endif %}
+
+        <!--Section de navigation responsive avec menu déroulant pour mobile-->
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto" role="menubar">
+
+                <!--Si l'utilisateur est connecté-->
+                <!--Button pour proposer une nouvelle activité-->
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Proposer une activité</a>
+                    <a class="nav-link" href="{% url 'add_activity' %}" role="menuitem"
+                        aria-label="Proposer une nouvelle activité">
+                        <i class="fas fa-plus me-1" aria-hidden="true"></i>Proposer une activité
+                    </a>
                 </li>
-                <li class="nav-item d-flex align-items-center me-2">
-                    <a href="{% url 'profile' %}" class="nav-link">
+
+
+                <!--Si l'utilisateur est connecté-->
+                <!--Un bouton pour accéder à mon profil-->
+                <li class="nav-item d-flex align-items-center me-2" role="none">
+                    <a href="{% url 'profile' %}" class="nav-link" role="menuitem"
+                        aria-label="Accéder à mon profil utilisateur">
                         {% if user.profile.avatar %}
-                        <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="rounded-circle me-1"
-                            style="width: 25px; height: 25px;">
+                        <img src="" alt="Avatar de {{ user.username }}" class="rounded-circle me-1">
                         {% else %}
-                        <i class="fas fa-user-circle me-1"></i>
+                        <i class="fas fa-user-circle me-1" aria-hidden="true"></i>
                         {% endif %}
                         {{ user.username }}
                     </a>
                 </li>
-                <li class="nav-item">
+
+
+                <!--Si l'utilisateur est connecté-->
+                <!--Button pour se déconnecter-->
+                <li class="nav-item" role="none">
                     <form method="post" action="{% url 'logout' %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="nav-link border-0 bg-transparent">
-                            <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
+                        <button type="submit" class="nav-link border-0 bg-transparent" role="menuitem"
+                            aria-label="Se déconnecter de mon compte">
+                            <i class="fas fa-sign-out-alt me-1" aria-hidden="true"></i>Déconnexion
                         </button>
                     </form>
                 </li>
 
+                <!--Si l'utilisateur est dans la page de connexion-->
+                {% elif request.path == '/accounts/login/' or request.path == '/accounts/register/' %}
+
                 <!-- Si utilisateur déconnecté -->
                 {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/accounts/login/">
-                        <i class="fas fa-sign-in-alt me-1"></i>Se connecter
+                <!--Button pour se connecter-->
+                <li class="nav-item" role="none">
+                    <a class="nav-link" href="/accounts/login/" role="menuitem" aria-label="Se connecter à mon compte">
+                        <i class="fas fa-sign-in-alt me-1" aria-hidden="true"></i>Se connecter
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="btn btn-outline-success" href="/signup/">
-                        <i class="fas fa-user-plus me-1"></i>S'inscrire
+                <!--Button pour s'inscrire-->
+                <li class="nav-item" role="none">
+                    <a class="btn btn-outline-success" href="/accounts/register/" role="menuitem"
+                        aria-label="Créer un nouveau compte">
+                        <i class="fas fa-user-plus me-1" aria-hidden="true"></i>S'inscrire
                     </a>
                 </li>
                 {% endif %}
-
             </ul>
         </div>
     </div>

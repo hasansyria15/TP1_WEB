@@ -17,11 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 import activities.views
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 urlpatterns = [
     path('', activities.views.index, name='home'),
     path('admin/', admin.site.urls),
     path('activities/', include('activities.urls')),
-    path('accounts/', include('django.contrib.auth.urls'))
+    path('accounts/login/', activities.views.Login_view, name='login'),  # Surcharge la vue login
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/register/', activities.views.signup_view, name='signup')
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

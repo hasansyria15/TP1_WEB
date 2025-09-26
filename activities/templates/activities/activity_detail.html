@@ -1,215 +1,274 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ activity.name }} - AirLibre{% endblock %}
+{% block title %}{{ activity.name }}{% endblock %}
 
 {% block content %}
-<div class="filters-card fade-in-up activity-detail-breadcrumb mt-5">
-    <nav aria-label="breadcrumb">
+<section class="container page-activity-detail">
+    <div class="filters-card fade-in-up activity-detail-breadcrumb">
+        <nav aria-label="Fil d'Ariane - Navigation"></nav>
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-success"><i
-                        class="fas fa-list me-1"></i>Activités</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'activity_list' %}" class="text-success"
+                    aria-label="Retour à la liste des activités"><i class="fas fa-list me-1"
+                        aria-hidden="true"></i>Activités</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ activity.title }}</li>
         </ol>
-    </nav>
-</div>
-
-<div class="activity-card fade-in-up">
-    <div class="card-header">
-        <h1 class="activity-title">
-            <i class="fas fa-mountain me-2"></i>
-            {{ activity.title }}
-        </h1>
-        <div class="activity-meta">
-            <span class="badge badge-primary">{{ activity.category }}</span>
-        </div>
+        </nav>
     </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="mb-4">
-                    <h3 class="mb-3"><i class="fas fa-info-circle me-2 text-success"></i>Description</h3>
-                    <p class="lead">{{ activity.description }}</p>
-                </div>
 
-                <div class="mb-4">
-                    <h3 class="mb-3"><i class="fas fa-clipboard-list me-2 text-success"></i>Détails de l'activité</h3>
+    <article class="activity-card fade-in-up">
+        <header class="card-header">
+            <h1 class="activity-title">
+                <i class="fas fa-mountain me-2" aria-hidden="true"></i>
+                {{ activity.title }}
+            </h1>
+            <div class="activity-meta">
+                <span class="badge badge-primary" role="img" aria-label="Catégorie : {{ activity.category }}">{{
+                    activity.category }}</span>
+            </div>
+        </header>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-8">
+                    <section class="mb-4">
+                        <h2 class="mb-3"><i class="fas fa-info-circle me-2 text-success"
+                                aria-hidden="true"></i>Description</h2>
+                        <p class="lead">{{ activity.description }}</p>
+                    </section>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
+                    <section class="mb-4">
+                        <h2 class="mb-3"><i class="fas fa-clipboard-list me-2 text-success"
+                                aria-hidden="true"></i>Détails de l'activité</h2>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <div class="info-icon" aria-hidden="true">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Lieu:</strong><br>
+                                        <span aria-label="Ville : {{ activity.location_city }}">
+                                            {{ activity.location_city }}</span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <strong>Lieu:</strong><br>
-                                    {{ activity.location_city }}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <div class="info-icon" aria-hidden="true">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Date de début:</strong><br>
+                                        <time datetime="{{ activity.start_time|date:'d/m/Y à H:i' }}"
+                                            aria-label="Date et heure de début">
+                                            {{ activity.start_time|date:"d/m/Y à H:i" }}
+                                        </time>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <div class="info-icon" aria-hidden="true">
+                                        <i class="fas fa-hiking"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Date de fin:</strong><br>
+                                        <time datetime="{{ activity.end_time|date:'d/m/Y à H:i' }}"
+                                            aria-label="Date et heure de fin">
+                                            {{ activity.end_time|date:"d/m/Y à H:i" }}
+                                        </time>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <div class="info-icon" aria-hidden="true">
+                                        <i class="fas fa-wind"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Qualité de l'air:</strong><br>
+                                        {% if aqi_description and aqi_description.level %}
+                                        <span class="badge bg-{{ aqi_description.color }} text-white" role="img"
+                                            aria-label="Qualité de l'air : {{ air_quality }} - {{ aqi_description.level }}">
+                                            {{ air_quality }} - {{ aqi_description.level }}
+                                        </span>
+                                        <div class="mt-2">
+                                            <small class="text-muted">{{ aqi_description.description }}</small>
+                                        </div>
+                                        {% elif air_quality %}
+                                        <span class="badge bg-secondary text-white" role="img"
+                                            aria-label="Indice de qualité de l'air : {{ air_quality }}">
+                                            AQI: {{ air_quality }}
+                                        </span>
+                                        <div class="mt-2">
+                                            <small class="text-muted">Données de qualité détaillées non
+                                                disponibles</small>
+                                        </div>
+                                        {% else %}
+                                        <span class="badge bg-light text-dark" role="img"
+                                            aria-label="Qualité de l'air non disponible">
+                                            Non disponible
+                                        </span>
+                                        <div class="mt-2">
+                                            <small class="text-muted">Les données de qualité de l'air ne sont pas
+                                                disponibles pour cette localisation</small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </section>
 
-                        <div class="col-md-6 mb-3">
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div>
-                                    <strong>Date de début:</strong><br>
-                                    {{ activity.start_time }}
+                    <section class="mb-4">
+                        <h2 class="mb-3"><i class="fas fa-check-circle me-2 text-success" aria-hidden="true"></i>Les
+                            participants</h2>
+                        <ul class="list-unstyled" role="list" aria-label="Liste des participants inscrits">
+                            {% for a in activity.attendees.all %}
+                            <li class="mb-2" role="listitem"><i class="fas fa-check text-success me-2"
+                                    aria-hidden="true"></i>{{ a.username }}</li>
+                            {% empty %}
+                            <li class="mb-2" role="listitem">Aucun participant inscrit pour le moment</li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                </div>
+
+                <aside class="col-lg-4" role="complementary" aria-label="Section réservation et assistance">
+                    <div class="filters-card">
+                        <!-- Section réservation -->
+                        <section class="text-center mb-4">
+                            <h2 class="mb-4">
+                                <i class="fas fa-ticket-alt me-2 text-success" aria-hidden="true"></i>
+                                Réservation
+                            </h2>
+
+                            {% if user.is_authenticated %}
+                            <!-- Vérifier si l'utilisateur est le proposeur -->
+                            {% if user == activity.proposer %}
+                            <div class="alert alert-info py-3 mb-3" role="alert" aria-live="polite">
+                                <div class="text-center">
+                                    <i class="fas fa-crown fa-2x text-warning mb-2" aria-hidden="true"></i>
+                                    <div>
+                                        <strong>Vous êtes l'organisateur</strong> de cette activité
+                                    </div>
+                                    <small class="text-muted">
+                                        En tant qu'organisateur, vous ne pouvez pas vous inscrire à votre propre
+                                        activité
+                                    </small>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col-md-6 mb-3">
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="fas fa-hiking"></i>
-                                </div>
-                                <div>
-                                    <strong>Date de fin:</strong><br>
-                                    {{ activity.end_time }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div>
-                                    <strong>Nombre de participants:</strong><br>
-                                    {{ participant_count }}
+                            <!-- Informations pour l'organisateur -->
+                            <div class="row g-2 text-start">
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center p-2 bg-light rounded" role="status"
+                                        aria-label="Nombre de participants">
+                                        <i class="fas fa-users text-success me-2" aria-hidden="true"></i>
+                                        <span><strong>{{ activity.attendees.count }}</strong> participant{{
+                                            activity.attendees.count|pluralize }}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <!-- Vérifier si l'utilisateur est déjà inscrit -->
+                            {% elif user in activity.attendees.all %}
+                            <div class="d-grid gap-2 mb-3">
+                                <a href="{% url 'reserve_activity' activity.id %}" class="btn btn-warning btn-lg"
+                                    aria-describedby="unsubscribe-info">
+                                    <i class="fas fa-user-minus me-2" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline">Se désinscrire</span>
+                                    <span class="d-sm-none">Désinscrire</span>
+                                </a>
+                            </div>
+                            <div class="alert alert-success py-2 mb-3" role="status" aria-live="polite"
+                                id="unsubscribe-info">
+                                <small>
+                                    <i class="fas fa-check-circle me-1" aria-hidden="true"></i>
+                                    <strong>Vous êtes inscrit</strong> à cette activité !
+                                </small>
+                            </div>
+
+                            <!-- L'utilisateur peut s'inscrire -->
+                            {% else %}
+                            <div class="d-grid gap-2 mb-3">
+                                <a href="{% url 'reserve_activity' activity.id %}" class="btn btn-details btn-lg"
+                                    aria-describedby="subscribe-info">
+                                    <i class="fas fa-calendar-plus me-2" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline">Réserver maintenant</span>
+                                    <span class="d-sm-none">Réserver</span>
+                                </a>
+                            </div>
+                            <div class="alert alert-success py-2 mb-3" role="status" aria-live="polite"
+                                id="subscribe-info">
+                                <small>
+                                    <i class="fas fa-gift me-1" aria-hidden="true"></i>
+                                    <strong>Inscription gratuite</strong> - Confirmation immédiate
+                                </small>
+                            </div>
+                            {% endif %}
+
+                            {% else %}
+                            <!-- Bouton de connexion pour utilisateurs non connectés -->
+                            <div class="d-grid gap-2 mb-3">
+                                <a href="{% url 'login' %}?next={% url 'activity_detail' activity.id %}"
+                                    class="btn btn-details btn-lg" aria-describedby="login-info">
+                                    <i class="fas fa-sign-in-alt me-2" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline">Connectez-vous pour réserver</span>
+                                    <span class="d-sm-none">Se connecter</span>
+                                </a>
+                            </div>
+
+                            <!-- Message informatif -->
+                            <div class="alert alert-info py-2 mb-0" role="status" aria-live="polite" id="login-info">
+                                <small>
+                                    <i class="fas fa-info-circle me-1" aria-hidden="true"></i>
+                                    Inscription requise pour participer
+                                </small>
+                            </div>
+                            {% endif %}
+                        </section>
                     </div>
-                </div>
 
-                <div class="mb-4">
-                    <h3 class="mb-3"><i class="fas fa-check-circle me-2 text-success"></i>Les participants</h3>
-                    <ul class="list-unstyled">
-                        {% for a in activity.attendees.all %}
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>{{ a.username }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
+                    <div class="filters-card mt-4">
+                        <section class="text-center">
+                            <h3 class="mb-3">
+                                <i class="fas fa-question-circle me-2 text-success" aria-hidden="true"></i>
+                                Besoin d'aide ?
+                            </h3>
+                            <p class="small text-muted mb-3">
+                                Pour toute question concernant cette activité, n'hésitez pas à nous contacter.
+                            </p>
 
-            <div class="col-lg-4">
-                <div class="filters-card">
-                    <div class="text-center mb-3">
-                        <h3 class="mb-3">Réserver cette activité</h3>
-
-                        <button class="btn btn-details w-100 mb-3">
-                            <i class="fas fa-shopping-cart me-2"></i>
-                            Réserver maintenant
-                        </button>
-
-                        
+                            <!-- Boutons d'assistance responsive (EXTRA POUR LE DESIGNE) -->
+                            <div class="row g-2">
+                                <div class="col-12 col-sm-6">
+                                    <a href="#" class="btn btn-outline-success btn-sm w-100"
+                                        aria-label="Envoyer un email pour obtenir de l'aide">
+                                        <i class="fas fa-envelope me-1" aria-hidden="true"></i>
+                                        <span class="d-none d-md-inline">Envoyer un email</span>
+                                        <span class="d-md-none">Email</span>
+                                    </a>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <a href="#" class="btn btn-outline-primary btn-sm w-100"
+                                        aria-label="Appeler pour obtenir de l'aide">
+                                        <i class="fas fa-phone me-1" aria-hidden="true"></i>
+                                        <span class="d-none d-md-inline">Appeler</span>
+                                        <span class="d-md-none">Téléphone</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
                     </div>
-
-                    <hr>
-
-                    <div class="mt-3">
-                        <h5><i class="fas fa-share-alt me-2"></i>Partager</h5>
-                        <div class="d-flex justify-content-center mt-3">
-                            <a href="#" class="mx-2"><i class="fab fa-facebook fa-2x text-primary"></i></a>
-                            <a href="#" class="mx-2"><i class="fab fa-twitter fa-2x text-info"></i></a>
-                            <a href="#" class="mx-2"><i class="fab fa-whatsapp fa-2x text-success"></i></a>
-                            <a href="#" class="mx-2"><i class="fab fa-pinterest fa-2x text-danger"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="filters-card mt-4">
-                    <h5><i class="fas fa-question-circle me-2"></i>Besoin d'aide ?</h5>
-                    <p class="small">Pour toute question concernant cette activité, n'hésitez pas à nous contacter.</p>
-                    <a href="#" class="btn btn-sm btn-outline-success w-100">
-                        <i class="fas fa-envelope me-2"></i>
-                        Contactez-nous
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Activités similaires -->
-<div class="mt-5">
-    <h3 class="mb-4"><i class="fas fa-compass me-2"></i>Activités similaires</h3>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="activity-card fade-in-up">
-                <div class="card-header">
-                    <h3 class="activity-title">Randonnée au Mont-Tremblant</h3>
-                </div>
-                <div class="card-body">
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-tag"></i>
-                        </div>
-                        <div>
-                            <strong>Prix:</strong> 50 €
-                        </div>
-                    </div>
-                    <div class="text-center mt-3">
-                        <a href="#" class="btn btn-details btn-sm">
-                            <i class="fas fa-eye me-2"></i>
-                            Voir
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="activity-card fade-in-up">
-                <div class="card-header">
-                    <h3 class="activity-title">Escalade en falaise</h3>
-                </div>
-                <div class="card-body">
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-tag"></i>
-                        </div>
-                        <div>
-                            <strong>Prix:</strong> 65 €
-                        </div>
-                    </div>
-                    <div class="text-center mt-3">
-                        <a href="#" class="btn btn-details btn-sm">
-                            <i class="fas fa-eye me-2"></i>
-                            Voir
-                        </a>
-                    </div>
-                </div>
+                </aside>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="activity-card fade-in-up">
-                <div class="card-header">
-                    <h3 class="activity-title">Randonnée nocturne</h3>
-                </div>
-                <div class="card-body">
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-tag"></i>
-                        </div>
-                        <div>
-                            <strong>Prix:</strong> 40 €
-                        </div>
-                    </div>
-                    <div class="text-center mt-3">
-                        <a href="#" class="btn btn-details btn-sm">
-                            <i class="fas fa-eye me-2"></i>
-                            Voir
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    </article>
+</section>
 {% endblock %}

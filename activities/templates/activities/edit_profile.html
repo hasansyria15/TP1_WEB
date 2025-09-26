@@ -4,351 +4,262 @@
 {% block title %}Modifier mon profil - AirLibre{% endblock %}
 
 {% block content %}
-<div class="edit-profile-section">
-    <div class="decorative-element"></div>
-    <div class="container py-5">
-        <!-- Fil d'Ariane -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <nav aria-label="breadcrumb" class="lien-pages mt-5">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-success"><i class="fas fa-home me-1"></i>Accueil</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'profile' %}" class="text-success"><i class="fas fa-user me-1"></i>Mon Profil</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Modifier mon profil</li>
-                    </ol>
-                </nav>
-                <h1 class="edit-profile-title"><i class="fas fa-user-edit me-2"></i>Modifier mon profil</h1>
-                <p class="text-muted">Personnalisez votre profil pour que la communauté AirLibre puisse mieux vous connaître</p>
-                
-                <!-- Indicateurs de progression -->
-                <div class="profile-completion mt-4 mb-3">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <span class="text-success fw-medium">Complétude du profil</span>
-                        <span class="badge bg-success rounded-pill">85%</span>
-                    </div>
-                    <div class="progress" style="height: 8px;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+<section class="container">
+    <div class="profile-container fade-in-up">
         <div class="row">
-            <!-- Colonne gauche pour l'avatar -->
-            <div class="col-lg-3 mb-4">
-                <div class="filters-card h-100 avatar-card">
-                    <h5 class="card-title mb-3"><i class="fas fa-camera me-2 text-success"></i>Photo de profil</h5>
-                    <div class="text-center">
-                        <div class="profile-avatar mx-auto mb-4">
-                            <i class="fa-solid fa-user profile-avatar-icon"></i>
+            <!-- Colonne de gauche : Avatar et informations -->
+            <div class="col-lg-4">
+                <div class="filters-card profile-sidebar">
+                    <div class="text-center mb-4">
+                        <h1 class="h4 mb-3">
+                            <i class="fas fa-user-edit me-2 text-success"></i>
+                            Modifier mon profil
+                        </h1>
+                        <p class="text-muted small">
+                            Personnalisez votre profil pour que la communauté AirLibre puisse mieux vous connaître
+                        </p>
+                    </div>
+
+                    <!-- Avatar actuel -->
+                    <div class="text-center mb-4">
+                        <div class="profile-avatar-container edit-avatar-container">
+                            {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}"
+                                alt="Avatar de {{ user.get_full_name|default:user.username }}"
+                                class="profile-avatar-image" id="avatarPreview">
+                            {% else %}
+                            <div class="profile-avatar-default" id="avatarPreview">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            {% endif %}
+                            <div class="avatar-edit-overlay">
+                                <i class="fas fa-camera"></i>
+                            </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="avatar" class="btn btn-outline-success btn-sm d-block mb-2">
-                                <i class="fas fa-upload me-2"></i>Choisir une photo
-                            </label>
-                            <input type="file" class="form-control form-control-sm d-none" id="avatar" name="avatar" accept="image/*">
-                            <div class="form-text">Format JPG ou PNG, max 2 Mo</div>
+                    </div>
+
+                    <!-- Informations du compte (non modifiables) -->
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading mb-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Informations du compte
+                        </h6>
+                        <div class="info-item">
+                            <strong>Nom d'utilisateur :</strong> {{ user.username }}
                         </div>
-                        
-                        <button type="button" class="btn btn-sm btn-outline-danger">
-                            <i class="fas fa-trash-alt me-1"></i>Supprimer la photo
-                        </button>
+
+                        <p class="mb-0 small mt-2 text-muted">
+                            <i class="fas fa-lock me-1"></i>
+                            Le nom d'utilisateur et le mot de passe ne sont pas modifiables ici.
+                        </p>
                     </div>
                 </div>
             </div>
-            
-            <!-- Colonne droite pour le formulaire principal -->
-            <div class="col-lg-9">
+
+            <!-- Colonne de droite : Formulaire -->
+            <div class="col-lg-8">
                 <div class="filters-card">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4><i class="fas fa-id-card me-2 text-success"></i>Informations personnelles</h4>
+                        <h2>
+                            <i class="fas fa-edit me-2 text-success"></i>
+                            Informations personnelles
+                        </h2>
                     </div>
-                    
-                    <!-- Formulaire de modification du profil -->
-                    <form id="profile-edit-form" action="{% url 'profile' %}" method="post" enctype="multipart/form-data" novalidate>
+
+                    <!-- Formulaire -->
+                    <form method="post" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
-                    
-                        <div class="row">
-                            <!-- Prénom -->
-                            <div class="col-md-6 mb-3">
-                                <label for="first_name" class="form-label">
-                                    <i class="fas fa-user-tag me-1 text-muted"></i>Prénom*
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0">
-                                        <i class="fas fa-signature text-success"></i>
-                                    </span>
-                                    <input type="text" class="form-control border-start-0" id="first_name" name="first_name" value="John" required>
-                                </div>
-                                <div class="invalid-feedback">Veuillez entrer votre prénom.</div>
-                            </div>
-                            
-                            <!-- Nom -->
-                            <div class="col-md-6 mb-3">
-                                <label for="last_name" class="form-label">
-                                    <i class="fas fa-user-tag me-1 text-muted"></i>Nom*
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0">
-                                        <i class="fas fa-signature text-success"></i>
-                                    </span>
-                                    <input type="text" class="form-control border-start-0" id="last_name" name="last_name" value="Doe" required>
-                                </div>
-                                <div class="invalid-feedback">Veuillez entrer votre nom.</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label for="email" class="form-label">
-                                <i class="fas fa-envelope me-1 text-muted"></i>Adresse courriel*
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-at text-success"></i>
-                                </span>
-                                <input type="email" class="form-control border-start-0" id="email" name="email" value="johndoe@example.com" required>
-                            </div>
-                            <div class="invalid-feedback">Veuillez entrer une adresse courriel valide.</div>
-                        </div>
-                        
-                        <!-- Téléphone -->
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">
-                                <i class="fas fa-phone me-1 text-muted"></i>Téléphone
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-phone-alt text-success"></i>
-                                </span>
-                                <input type="tel" class="form-control border-start-0" id="phone" name="phone" value="(514) 123-4567">
-                            </div>
-                            <div class="form-text">Format: (123) 456-7890</div>
-                        </div>
-                        
-                        <!-- Localisation -->
-                        <div class="mb-3">
-                            <label for="location" class="form-label">
-                                <i class="fas fa-map-marker-alt me-1 text-muted"></i>Ville
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-map-marked-alt text-success"></i>
-                                </span>
-                                <input type="text" class="form-control border-start-0" id="location" name="location" value="Montréal, QC">
-                            </div>
-                        </div>
-                        
-                        <!-- Biographie -->
+
+                        <!-- Section Avatar -->
                         <div class="mb-4">
-                            <label for="bio" class="form-label">
-                                <i class="fas fa-book-open me-1 text-muted"></i>Biographie
+                            <label for="{{ form.avatar.id_for_label }}" class="form-label">
+                                <i class="fas fa-camera me-1 text-muted"></i>
+                                Photo de profil
                             </label>
-                            <textarea class="form-control" id="bio" name="bio" rows="4" placeholder="Parlez-nous un peu de vous, de vos intérêts et de vos activités préférées...">Passionné de plein air et d'activités en nature. J'adore la randonnée, le camping et l'escalade. Toujours prêt pour une nouvelle aventure!</textarea>
-                            <div class="form-text">Maximum 500 caractères</div>
+
+                            <!-- Aperçu de l'avatar actuel -->
+                            <div class="avatar-preview-container mb-3">
+                                {% if user.avatar %}
+                                <img src="{{ user.avatar.url }}" alt="Avatar actuel" class="avatar-preview"
+                                    id="current-avatar">
+                                {% else %}
+                                <div class="avatar-placeholder" id="current-avatar">
+                                    <i class="fas fa-user fa-3x text-muted"></i>
+                                </div>
+                                {% endif %}
+                                <div class="avatar-overlay">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Changer</span>
+                                </div>
+                            </div>
+
+                            {{ form.avatar }}
+                            <div class="form-text">
+                                Cliquez sur votre avatar pour changer votre photo. Formats acceptés : JPG, PNG, GIF,
+                                WebP (max 2 MB)
+                            </div>
+                            {% if form.avatar.errors %}
+                            {% for error in form.avatar.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                            {% endif %}
                         </div>
 
-                        <div class="card mb-4 border-success bg-light">
-                            <div class="card-body">
-                                <h6 class="card-title">
-                                    <i class="fas fa-lightbulb me-2 text-warning"></i>Conseil
-                                </h6>
-                                <p class="card-text small">Une biographie complète permet aux autres utilisateurs de mieux vous connaître et augmente vos chances de trouver des activités qui vous correspondent.</p>
+                        <!-- Prénom et Nom -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user-tag me-1 text-muted"></i>
+                                    {{ form.first_name.label }}
+                                    {% if form.first_name.field.required %}
+                                    <span class="text-danger">*</span>
+                                    {% endif %}
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                {% for error in form.first_name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user-tag me-1 text-muted"></i>
+                                    {{ form.last_name.label }}
+                                    {% if form.last_name.field.required %}
+                                    <span class="text-danger">*</span>
+                                    {% endif %}
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                {% for error in form.last_name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                                {% endif %}
                             </div>
                         </div>
-                    
-                        <hr class="my-4">
-                        
-                        <!-- Préférences -->
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="fas fa-envelope me-1 text-muted"></i>
+                                {{ form.email.label }}
+                                {% if form.email.field.required %}
+                                <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            {% for error in form.email.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Biographie -->
                         <div class="mb-4">
-                            <h5 class="d-flex align-items-center">
-                                <i class="fas fa-sliders-h me-2 text-success"></i>
-                                Préférences
-                            </h5>
-                            <div class="card border-0 bg-light p-3 rounded-3">
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="newsletter" name="newsletter" checked>
-                                    <label class="form-check-label d-flex justify-content-between align-items-center w-100" for="newsletter">
-                                        <span>
-                                            <i class="fas fa-envelope-open-text me-2 text-success"></i>
-                                            Recevoir les notifications par email
-                                        </span>
-                                        <span class="badge bg-success bg-opacity-10 text-success">Recommandé</span>
-                                    </label>
-                                    <small class="text-muted d-block mt-1 ms-4">Restez informé des nouvelles activités et des messages</small>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="public_profile" name="public_profile" checked>
-                                    <label class="form-check-label" for="public_profile">
-                                        <i class="fas fa-globe me-2 text-success"></i>
-                                        Profil public
-                                    </label>
-                                    <small class="text-muted d-block mt-1 ms-4">Permettre aux autres utilisateurs de voir votre profil</small>
-                                </div>
+                            <label for="{{ form.bio.id_for_label }}" class="form-label">
+                                <i class="fas fa-book-open me-1 text-muted"></i>
+                                {{ form.bio.label }}
+                            </label>
+                            {{ form.bio }}
+                            <div class="form-text">
+                                Partagez vos passions et intérêts pour les activités de plein air (max 500 caractères)
                             </div>
+                            <div class="bio-counter text-end small text-muted mt-1"></div>
+                            {% if form.bio.errors %}
+                            {% for error in form.bio.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                            {% endif %}
                         </div>
-                        
-                        <!-- Information sur le nom d'utilisateur -->
-                        <div class="alert alert-info mb-4 border-0 shadow-sm">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-info-circle fa-2x text-info me-3"></i>
-                                </div>
-                                <div>
-                                    <h5 class="alert-heading fs-6">Information importante</h5>
-                                    <p class="mb-0">Le nom d'utilisateur et le mot de passe ne sont pas modifiables ici. Pour changer votre mot de passe, veuillez utiliser la <a href="#" class="alert-link">page dédiée</a>.</p>
-                                </div>
-                            </div>
-                        </div>
-                        
+
                         <!-- Boutons d'action -->
-                        <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                             <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>Retour au profil
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Retour au profil
                             </a>
                             <button type="submit" class="btn btn-details">
-                                <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                                <i class="fas fa-save me-2"></i>
+                                Enregistrer les modifications
                             </button>
                         </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+{% endblock %}
 
-<!-- Scripts pour la validation côté client et les animations -->
+{% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Récupération du formulaire
-        const form = document.getElementById('profile-edit-form');
-        const filterCards = document.querySelectorAll('.filters-card');
-        const inputs = document.querySelectorAll('.form-control');
-        const bioTextarea = document.getElementById('bio');
-        const bioCounter = document.createElement('div');
-        
-        // Configuration du compteur de caractères
-        bioCounter.className = 'small text-muted text-end mt-1';
-        bioTextarea.parentNode.appendChild(bioCounter);
-        
-        function updateBioCounter() {
-            const maxLength = 500;
-            const currentLength = bioTextarea.value.length;
-            const remainingChars = maxLength - currentLength;
-            
-            bioCounter.textContent = `${currentLength}/${maxLength} caractères`;
-            
-            if (remainingChars < 50) {
-                bioCounter.classList.add('text-warning');
-                bioCounter.classList.remove('text-muted', 'text-danger');
-            } else if (remainingChars < 0) {
-                bioCounter.classList.add('text-danger');
-                bioCounter.classList.remove('text-muted', 'text-warning');
-            } else {
-                bioCounter.classList.add('text-muted');
-                bioCounter.classList.remove('text-warning', 'text-danger');
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        // Gestion de l'aperçu d'avatar
+        const avatarInput = document.getElementById('{{ form.avatar.id_for_label }}');
+        const avatarPreview = document.getElementById('avatarPreview');
+        const avatarContainer = document.querySelector('.edit-avatar-container');
+
+        // Clic sur l'avatar pour ouvrir le sélecteur de fichier
+        if (avatarContainer) {
+            avatarContainer.addEventListener('click', function () {
+                avatarInput.click();
+            });
+
+            avatarContainer.style.cursor = 'pointer';
         }
-        
-        // Mise à jour initiale du compteur
-        updateBioCounter();
-        
-        // Mise à jour du compteur lors de la saisie
-        bioTextarea.addEventListener('input', updateBioCounter);
-        
-        // Effet de souris interactive sur les cartes
-        filterCards.forEach(card => {
-            card.addEventListener('mousemove', function(e) {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
+
+        // Aperçu de l'image sélectionnée
+        if (avatarInput) {
+            avatarInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        if (avatarPreview.tagName === 'IMG') {
+                            avatarPreview.src = e.target.result;
+                        } else {
+                            // Remplacer le div par une image
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.alt = 'Aperçu avatar';
+                            img.className = 'profile-avatar-image';
+                            img.id = 'avatarPreview';
+                            avatarPreview.parentNode.replaceChild(img, avatarPreview);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
-        });
-        
-        // Animation des inputs lors du focus
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentNode.classList.add('input-focused');
-            });
-            
-            input.addEventListener('blur', function() {
-                this.parentNode.classList.remove('input-focused');
-            });
-        });
-        
-        // Ajout de l'événement submit au formulaire
-        form.addEventListener('submit', function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-                
-                // Animation de secousse pour les champs invalides
-                const invalidInputs = form.querySelectorAll(':invalid');
-                invalidInputs.forEach(input => {
-                    input.parentNode.classList.add('shake-animation');
-                    setTimeout(() => {
-                        input.parentNode.classList.remove('shake-animation');
-                    }, 500);
-                });
+        }
+
+        // Compteur de caractères pour la biographie
+        const bioTextarea = document.getElementById('{{ form.bio.id_for_label }}');
+        const bioCounter = document.querySelector('.bio-counter');
+
+        if (bioTextarea && bioCounter) {
+            function updateBioCounter() {
+                const currentLength = bioTextarea.value.length;
+                const maxLength = 500;
+
+                bioCounter.textContent = currentLength + '/' + maxLength + ' caractères';
+
+                // Changer la couleur selon le nombre de caractères
+                bioCounter.classList.remove('text-muted', 'text-warning', 'text-danger');
+                if (currentLength > maxLength) {
+                    bioCounter.classList.add('text-danger');
+                } else if (currentLength > maxLength * 0.9) {
+                    bioCounter.classList.add('text-warning');
+                } else {
+                    bioCounter.classList.add('text-muted');
+                }
             }
-            
-            form.classList.add('was-validated');
-        });
-        
-        // Personnalisation du champ de fichier pour l'avatar
-        const avatarInput = document.getElementById('avatar');
-        const avatarLabel = document.querySelector('label[for="avatar"]');
-        const avatarPreview = document.querySelector('.profile-avatar');
-        
-        avatarInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    // Créer l'aperçu de l'image
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'img-fluid avatar-preview';
-                    
-                    // Vider l'avatar actuel et ajouter l'image
-                    avatarPreview.innerHTML = '';
-                    avatarPreview.appendChild(img);
-                    
-                    // Mettre à jour le texte du bouton
-                    avatarLabel.innerHTML = '<i class="fas fa-sync-alt me-2"></i>Changer la photo';
-                };
-                
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
+
+            bioTextarea.addEventListener('input', updateBioCounter);
+            updateBioCounter(); // Initialisation
+        }
     });
 </script>
-
-<!-- Animation shake pour les champs invalides -->
-<style>
-    @keyframes shakeAnimation {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-10px); }
-        50% { transform: translateX(10px); }
-        75% { transform: translateX(-10px); }
-    }
-    
-    .shake-animation {
-        animation: shakeAnimation 0.5s ease-in-out;
-    }
-    
-    .input-focused {
-        transform: translateY(-3px);
-    }
-    
-    .avatar-preview {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-</style>
 {% endblock %}
