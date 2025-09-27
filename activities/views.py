@@ -143,14 +143,15 @@ def activity_detail(request, activity_id):
     # Récupérer la qualité de l'air pour la localisation de l'activité
     air_data = None
     aqi_description = None
+    aqi_value = None
+    aqi_error_message = None
+    
     try:
         air_data = get_air_quality(activity.location_city)
-        aqi_value = air_data["data"]["aqi"] if air_data else None
+        aqi_value = air_data["data"]["aqi"] if air_data and "data" in air_data and "aqi" in air_data["data"] else None
 
         if aqi_value is not None:
             # Process the AQI value here
-            aqi_description = None
-
             if aqi_value <= 50:
                 aqi_description = {
                     'level': 'Bon',
@@ -163,7 +164,6 @@ def activity_detail(request, activity_id):
                     'color': 'warning',
                     'description': 'Qualité de l\'air acceptable, mais certaines personnes sensibles pourraient ressentir des effets'
                 }
-
             elif aqi_value <= 150:
                 aqi_description = {
                     'level': 'Mauvais pour les sensibles',
@@ -180,19 +180,42 @@ def activity_detail(request, activity_id):
                 aqi_description = {
                     'level': 'Très mauvais',
                     'color': 'dark',
-                    'description': 'Aucun activité extérieure recommandée pour tout le monde'
+                    'description': 'Aucune activité extérieure recommandée pour tout le monde'
                 }
             else:
                 aqi_description = {
                     'level': 'Dangereux',
                     'color': 'black',
-                    'description': 'Aucun activité extérieure recommandée pour tout le monde'
+                    'description': 'Aucune activité extérieure recommandée pour tout le monde'
                 }
-
-
+        else:
+            aqi_error_message = "Les données de qualité de l'air ne sont pas disponibles pour cette ville"
+            
     except ValueError as e:
-        print(f"Erreur récupération AQI: {e}")
-        aqi_value = None
+        # Gestion spécifique des erreurs de l'API
+        error_msg = str(e).lower()
+        if "ville non trouvée" in error_msg or "not found" in error_msg or "unknown station" in error_msg:
+            aqi_error_message = f"Données de qualité de l'air non disponibles pour '{activity.location_city}'"
+        elif "timeout" in error_msg:
+            aqi_error_message = "Service de qualité de l'air trop lent à répondre"
+        elif "réseau" in error_msg or "network" in error_msg or "connexion" in error_msg or "dns" in error_msg:
+            aqi_error_message = "Impossible de récupérer les données de qualité de l'air (problème de connexion)"
+        elif "token" in error_msg:
+            aqi_error_message = "Service de qualité de l'air temporairement indisponible (authentification)"
+        elif "limite" in error_msg or "limit" in error_msg:
+            aqi_error_message = "Service de qualité de l'air temporairement indisponible (limite atteinte)"
+        elif "invalide" in error_msg or "invalid" in error_msg:
+            aqi_error_message = f"Nom de ville '{activity.location_city}' non reconnu par le service"
+        else:
+            aqi_error_message = "Données de qualité de l'air temporairement indisponibles"
+        
+        # Log l'erreur pour le développeur mais ne pas l'afficher à l'utilisateur
+        print(f"[AQI] Erreur pour {activity.location_city}: {e}")
+        
+    except Exception as e:
+        # Gestion des erreurs inattendues
+        aqi_error_message = "Données de qualité de l'air temporairement indisponibles"
+        print(f"[AQI] Erreur inattendue pour {activity.location_city}: {e}")
 
     # compter le nombre des participants
     participant_count = activity.attendees.count()
@@ -204,6 +227,7 @@ def activity_detail(request, activity_id):
         'participant_count': participant_count,
         'air_quality': aqi_value,
         'aqi_description': aqi_description,
+        'aqi_error_message': aqi_error_message,
     }
 
     return render(request, 'activities/activity_detail.html', context)
@@ -351,6 +375,48 @@ def test_500_real(request):
     # Déclencher intentionnellement une erreur pour tester le gestionnaire
     raise Exception("Erreur de test 500 - Division par zéro intentionnelle")
     return None  # Cette ligne ne sera jamais exécutée
+
+def test_aqi_errors(request):
+    """Vue de test pour tester différents scénarios d'erreurs AQI"""
+    test_cities = [
+        "Paris",           # Devrait fonctionner
+        "VilleInexistante123", # Ville non trouvée
+        "",                # Nom vide
+        "A"                # Nom trop court
+    ]
+    
+    results = []
+    for city in test_cities:
+        try:
+            if city == "":
+                city_display = "[vide]"
+            else:
+                city_display = city
+                
+            air_data = get_air_quality(city) if city else get_air_quality("VilleTestErreur")
+            aqi_value = air_data["data"]["aqi"] if air_data else None
+            results.append({
+                'city': city_display,
+                'status': 'Succès',
+                'aqi': aqi_value,
+                'error': None
+            })
+        except ValueError as e:
+            results.append({
+                'city': city_display,
+                'status': 'Erreur',
+                'aqi': None,
+                'error': str(e)
+            })
+        except Exception as e:
+            results.append({
+                'city': city_display,
+                'status': 'Erreur inattendue',
+                'aqi': None,
+                'error': str(e)
+            })
+    
+    return render(request, 'activities/test_aqi.html', {'results': results})
 
 
 #Done

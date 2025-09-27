@@ -115,8 +115,13 @@
                                             Non disponible
                                         </span>
                                         <div class="mt-2">
-                                            <small class="text-muted">Les données de qualité de l'air ne sont pas
-                                                disponibles pour cette localisation</small>
+                                            <small class="text-muted">
+                                                {% if aqi_error_message %}
+                                                    {{ aqi_error_message }}
+                                                {% else %}
+                                                    Les données de qualité de l'air ne sont pas disponibles pour cette localisation
+                                                {% endif %}
+                                            </small>
                                         </div>
                                         {% endif %}
                                     </div>
