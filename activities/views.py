@@ -1,14 +1,19 @@
+import os
 from django.shortcuts import render, Http404, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from .froms import LoginForm, RegisterForm, UserEditForm
 from django.utils import timezone
 from django.contrib import messages
-from .models import Activity
+from .models import Activity, User
 from .froms import ArticleSearchForm, addNewActivity
 from .services.aqi import get_air_quality
 from django.http import HttpResponseBadRequest
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.core.files.storage import FileSystemStorage
+from django.core.paginator import Paginator
+from django.conf import settings
+
 # Create your views here.
 
 # Fonctions d'aide pour les pages d'erreur personnalisées
@@ -36,6 +41,23 @@ def render_500_error(request, message="Erreur serveur"):
         'exception': message
     }, status=500)
 
+def redirect_to_login_with_message(request, message="Vous devez être connecté pour accéder à cette page."):
+    """Redirige vers la page de connexion avec un message d'erreur"""
+    messages.error(request, message)
+    # Récupérer l'URL actuelle pour la redirection après connexion
+    next_url = request.get_full_path()
+    return redirect(f"{settings.LOGIN_URL}?next={next_url}")
+
+def custom_login_required(message="Vous devez être connecté pour accéder à cette page."):
+    """Décorateur personnalisé pour exiger une authentification avec message personnalisé"""
+    def decorator(view_func):
+        def wrapped_view(request, *args, **kwargs):
+            if not request.user.is_authenticated:
+                return redirect_to_login_with_message(request, message)
+            return view_func(request, *args, **kwargs)
+        return wrapped_view
+    return decorator
+
 #Done
 def index(request):
     # pylint: disable=no-member
@@ -48,11 +70,18 @@ def index(request):
 #Done
 def Login_view(request):
 
-
     # Empêche l'accès à la page de connexion si l'utilisateur est déjà connecté
     if request.user.is_authenticated:
         return redirect('home')
 
+    # Vérifier si l'utilisateur vient d'une page nécessitant une connexion
+    next_url = request.GET.get('next', '')
+    if 'add' in next_url:
+        messages.info(request, "Vous devez être connecté pour ajouter une activité.")
+    elif 'profile' in next_url:
+        messages.info(request, "Vous devez être connecté pour accéder à votre profil.")
+    elif next_url and next_url != '/':
+        messages.info(request, "Vous devez être connecté pour accéder à cette page.")
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -186,6 +215,7 @@ def activity_list(request):
     activities = Activity.objects.filter(
         start_time__gte=timezone.now()
     )
+    
 
     # Créer une instance du formulaire avec les données GET
     form = ArticleSearchForm(request.GET)
@@ -212,7 +242,7 @@ def activity_list(request):
                     activities = activities.filter(attendees=request.user)
             else:
                 # Utilisateur non connecté essayant d'accéder à une section privée
-                return render_403_error(request, "Vous devez être connecté pour voir cette section")
+                return redirect_to_login_with_message(request, "Vous devez être connecté pour voir cette section")
     else:
         # Si le formulaire n'est pas valide, rediriger vers la page d'erreur 400
         error_message = ""
@@ -235,21 +265,26 @@ def activity_list(request):
     return render(request, 'activities/activity_list.html', context)
 
 #Done
-def profile(request):
+def profile(request, user_id=None):
     """
     Vue pour la page de profil utilisateur.
-    Cette vue est simplifiée et ne contient pas de logique backend.
+    Si user_id est fourni, affiche le profil de cet utilisateur.
+    Sinon, affiche le profil de l'utilisateur connecté.
     """
 
     # pylint: disable=no-member
     if not request.user.is_authenticated:
-        return render_403_error(request, "Vous devez être connecté pour voir votre profil")
+        return redirect_to_login_with_message(request, "Vous devez être connecté pour voir les profils")
 
+    # Si un user_id est fourni, récupérer cet utilisateur, sinon l'utilisateur connecté
+    if user_id:
+        try:
+            utilisateur = User.objects.get(id=user_id)
 
-
-
-    # Récupérer l'utilisateur connecté
-    utilisateur = request.user
+        except User.DoesNotExist:
+            raise Http404("Utilisateur non trouvé")
+    else:
+        utilisateur = request.user
 
     # Récupérer toutes les activités pour les statistiques
     all_activities_proposed = Activity.objects.filter(proposer=utilisateur)
@@ -270,8 +305,8 @@ def profile(request):
 
     return render(request, 'activities/profile.html', context)
 
-
-@login_required
+#Done
+@custom_login_required("Vous devez être connecté pour modifier votre profil.")
 def edit_profile(request):
     """
     Vue pour modifier le profil utilisateur.
@@ -311,12 +346,18 @@ def test_500(request):
     """Vue de test pour la page d'erreur 500"""
     return render_500_error(request, "Erreur de test 500 - Problème technique sur le serveur")
 
+def test_500_real(request):
+    """Vue de test qui déclenche une vraie erreur 500"""
+    # Déclencher intentionnellement une erreur pour tester le gestionnaire
+    raise Exception("Erreur de test 500 - Division par zéro intentionnelle")
+    return None  # Cette ligne ne sera jamais exécutée
 
+
+#Done
+@custom_login_required("Vous devez être connecté pour réserver une activité.")
 def reserve_activity(request, activity_id):
     """Vue pour gérer l'inscription/désinscription aux activités"""
-    # Vérifier que l'utilisateur est connecté
-    if not request.user.is_authenticated:
-        return render_403_error(request, "Vous devez être connecté pour réserver une activité.")
+    # Le décorateur @custom_login_required gère déjà l'authentification
 
     # Récupérer l'activité ou retourner 404
     try:
@@ -347,10 +388,11 @@ def reserve_activity(request, activity_id):
     return redirect('activity_detail', activity_id=activity_id)
 
 
-
-@login_required
+#Done
+@custom_login_required("Vous devez être connecté pour créer une activité.")
 def add_activity(request):
     """Vue pour ajouter une nouvelle activité"""
+    
     if request.method == 'POST':
         form = addNewActivity(request.POST)
         if form.is_valid():
@@ -358,6 +400,7 @@ def add_activity(request):
             new_activity.proposer = request.user
             new_activity.save()
             form.save_m2m()  # Pour sauvegarder les relations ManyToMany
+
             messages.success(request, "Nouvelle activité ajoutée avec succès!")
             return redirect('activity_detail', activity_id=new_activity.id)
         else:

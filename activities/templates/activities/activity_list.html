@@ -23,20 +23,7 @@
 <main id="main-content" tabindex="-1">
     <section class="container page-activity-list" aria-labelledby="explorer-activites">
 
-        <!-- Affichage des messages -->
-        {% if messages %}
-        <div class="container mb-4" aria-live="polite">
-            {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %} alert-dismissible fade show"
-                role="alert">
-                <i class="fas fa-{% if message.tags == 'error' %}exclamation-triangle{% elif message.tags == 'success' %}check-circle{% elif message.tags == 'warning' %}exclamation-circle{% else %}info-circle{% endif %} me-2"
-                    aria-hidden="true"></i>
-                <span>{{ message }}</span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer l'alerte"></button>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+
 
         <!-- Filtres et contrôles -->
         <div class="filters-card fade-in-up" aria-labelledby="explorer-activites">

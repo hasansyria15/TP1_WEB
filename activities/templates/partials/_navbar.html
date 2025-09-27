@@ -27,16 +27,15 @@
                     </a>
                 </li>
 
-
                 <!--Si l'utilisateur est connecté-->
                 <!--Un bouton pour accéder à mon profil-->
                 <li class="nav-item d-flex align-items-center me-2" role="none">
                     <a href="{% url 'profile' %}" class="nav-link" role="menuitem"
                         aria-label="Accéder à mon profil utilisateur">
-                        {% if user.profile.avatar %}
-                        <img src="" alt="Avatar de {{ user.username }}" class="rounded-circle me-1">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="Avatar de {{ user.username }}" class="rounded-circle me-1" width="24" height="24">
                         {% else %}
-                        <i class="fas fa-user-circle me-1" aria-hidden="true"></i>
+                            <i class="fas fa-user-circle me-1" aria-hidden="true"></i>
                         {% endif %}
                         {{ user.username }}
                     </a>

@@ -22,6 +22,32 @@ def validate_avatar_size(value):
         raise ValidationError('L\'image est trop volumineuse (2MB maximum)')
 
 
+def validate_file_extension(value):
+    """Valide l'extension du fichier téléversé"""
+    allowed_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.doc', '.docx']
+    ext = os.path.splitext(value.name)[1].lower()
+    if ext not in allowed_extensions:
+        raise ValidationError(f'Type de fichier non autorisé: {ext}')
+
+
+def validate_file_size(value):
+    """Valide la taille du fichier (5MB max)"""
+    filesize = value.size
+    if filesize > 5 * 1024 * 1024:  # 5MB
+        raise ValidationError('Le fichier est trop volumineux (5MB maximum)')
+
+
+def document_upload_path(instance, filename):
+    """Génère un chemin de téléversement pour les documents d'activité"""
+    import uuid
+    # Garder l'extension originale
+    ext = os.path.splitext(filename)[1]
+    # Créer un nom de fichier unique
+    new_filename = f"doc_{uuid.uuid4().hex[:8]}{ext}"
+    return f'documents/activity_{instance.id}/{new_filename}'
+
+
+# Créer un chemin de téléversement pour l'avatar (réfernce youtube)
 def avatar_upload_path(instance, filename):
     """Génère un chemin de téléversement organisé par utilisateur"""
     # Garder l'extension originale
@@ -97,6 +123,7 @@ class Activity(models.Model):
         verbose_name="Titre",
         blank=False,
         null=False,
+        max_length=200,  # Ajout de max_length obligatoire pour CharField
        validators=[
               MinLengthValidator(5, "Le titre doit contenir au moins 5 caractères."),
               MaxLengthValidator(200, "Le titre doit contenir au plus 200 caractères.")
@@ -163,6 +190,14 @@ class Activity(models.Model):
             on_delete=models.SET_NULL,
             null=True,
         )
+    document = models.FileField(
+            upload_to=document_upload_path,
+            blank=True,
+            null=True,
+            verbose_name="Document joint",
+            help_text="Joindre un document à l'activité (PDF, DOC, DOCX, images - 5MB max)",
+            validators=[validate_file_extension, validate_file_size]
+        )
 
     class Meta:
         ordering = ['start_time']
@@ -178,11 +213,19 @@ class Activity(models.Model):
         # Initialiser un dictionnaire pour collecter les erreurs
         errors = {}
 
-        # Valider les dates
-        if self.end_time <= self.start_time:
-            errors['end_time'] = "L'heure de fin doit être après l'heure de début."
+        # Vérifier que les champs obligatoires ne sont pas None
+        if self.start_time is None:
+            errors['start_time'] = "L'heure de début est obligatoire."
+        
+        if self.end_time is None:
+            errors['end_time'] = "L'heure de fin est obligatoire."
 
-        if self.start_time < timezone.now():
+        # Valider les dates seulement si elles ne sont pas None
+        if self.start_time is not None and self.end_time is not None:
+            if self.end_time <= self.start_time:
+                errors['end_time'] = "L'heure de fin doit être après l'heure de début."
+
+        if self.start_time is not None and self.start_time < timezone.now():
             errors['start_time'] = "L'heure de début doit être dans le futur."
 
         # Si des erreurs ont été détectées, les lever

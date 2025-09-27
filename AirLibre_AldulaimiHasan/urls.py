@@ -30,5 +30,11 @@ urlpatterns = [
     path('accounts/register/', activities.views.signup_view, name='signup')
 ]
 
+# Gestionnaires d'erreurs personnalisés
+handler400 = 'activities.views.render_400_error'
+handler403 = 'activities.views.render_403_error'
+handler404 = 'activities.views.render_404_error'
+handler500 = 'activities.views.render_500_error'
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

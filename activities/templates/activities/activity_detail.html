@@ -23,8 +23,8 @@
                 {{ activity.title }}
             </h1>
             <div class="activity-meta">
-                <span class="badge badge-primary" role="img" aria-label="Catégorie : {{ activity.category }}">{{
-                    activity.category }}</span>
+                <span class="badge badge-primary" role="img" aria-label="Catégorie : {{ activity.category }}">
+                    {{activity.category }}</span>
             </div>
         </header>
         <div class="card-body">
@@ -122,6 +122,32 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <div class="info-icon" aria-hidden="true">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Organisateur:</strong><br>
+                                        <a href="{% url 'user_profile' activity.proposer.pk %}" 
+                                           class="text-decoration-none text-success fw-bold"
+                                           aria-label="Voir le profil de {{ activity.proposer.get_full_name|default:activity.proposer.username }}">
+                                            <i class="fas fa-user me-1" aria-hidden="true"></i>
+                                            {% if activity.proposer.first_name and activity.proposer.last_name %}
+                                                {{ activity.proposer.first_name }} {{ activity.proposer.last_name }}
+                                            {% else %}
+                                                {{ activity.proposer.username }}
+                                            {% endif %}
+                                        </a>
+                                        {% if activity.proposer.bio %}
+                                        <div class="mt-2">
+                                            <small class="text-muted">{{ activity.proposer.bio|truncatewords:15 }}</small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -170,8 +196,8 @@
                                     <div class="d-flex align-items-center p-2 bg-light rounded" role="status"
                                         aria-label="Nombre de participants">
                                         <i class="fas fa-users text-success me-2" aria-hidden="true"></i>
-                                        <span><strong>{{ activity.attendees.count }}</strong> participant{{
-                                            activity.attendees.count|pluralize }}</span>
+                                        <span><strong>{{ activity.attendees.count }}</strong> 
+                                            participant{{ activity.attendees.count|pluralize }}</span>
                                     </div>
                                 </div>
                             </div>

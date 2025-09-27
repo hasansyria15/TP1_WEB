@@ -142,6 +142,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Configuration du modèle utilisateur personnalisé
 AUTH_USER_MODEL = 'activities.User'
 
+# URL de connexion pour le décorateur @login_required
+LOGIN_URL = '/accounts/login/'
+
 # Redirection après la connexion
 LOGIN_REDIRECT_URL = '/'
 

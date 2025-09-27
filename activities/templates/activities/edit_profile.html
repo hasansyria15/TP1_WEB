@@ -72,36 +72,46 @@
 
                         <!-- Section Avatar -->
                         <div class="mb-4">
-                            <label for="{{ form.avatar.id_for_label }}" class="form-label">
+                            <label class="form-label d-block"></label>
                                 <i class="fas fa-camera me-1 text-muted"></i>
                                 Photo de profil
                             </label>
 
-                            <!-- Aperçu de l'avatar actuel -->
-                            <div class="avatar-preview-container mb-3">
-                                {% if user.avatar %}
-                                <img src="{{ user.avatar.url }}" alt="Avatar actuel" class="avatar-preview"
-                                    id="current-avatar">
-                                {% else %}
-                                <div class="avatar-placeholder" id="current-avatar">
-                                    <i class="fas fa-user fa-3x text-muted"></i>
-                                </div>
-                                {% endif %}
-                                <div class="avatar-overlay">
-                                    <i class="fas fa-camera"></i>
-                                    <span>Changer</span>
+                            <!-- Aperçu de l'avatar avec meilleur affichage -->
+                            <div class="avatar-preview-container mb-3 text-center">
+                                <div class="position-relative d-inline-block">
+                                    {% if user.avatar %}
+                                    <img src="{{ user.avatar.url }}" alt="Avatar actuel" class="avatar-preview rounded-circle"
+                                        id="current-avatar" style="width: 120px; height: 120px; object-fit: cover;">
+                                    {% else %}
+                                    <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-light"
+                                        id="current-avatar" style="width: 120px; height: 120px;">
+                                        <i class="fas fa-user fa-3x text-muted"></i>
+                                    </div>
+                                    {% endif %}
+                                    <label for="{{ form.avatar.id_for_label }}" class="avatar-overlay rounded-circle position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+                                        <i class="fas fa-camera"></i>
+                                        <span class="small mt-1">Changer</span>
+                                    </label>
                                 </div>
                             </div>
 
-                            {{ form.avatar }}
-                            <div class="form-text">
-                                Cliquez sur votre avatar pour changer votre photo. Formats acceptés : JPG, PNG, GIF,
-                                WebP (max 2 MB)
+                            <div class="input-group">
+                                {{ form.avatar }}
+                                <label for="{{ form.avatar.id_for_label }}" class="input-group-text">
+                                    <i class="fas fa-upload me-2"></i>Parcourir
+                                </label>
+                            </div>
+                            <div class="form-text mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Formats acceptés : JPG, PNG, GIF, WebP (max 2 MB)
                             </div>
                             {% if form.avatar.errors %}
-                            {% for error in form.avatar.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>
-                            {% endfor %}
+                            <div class="alert alert-danger mt-2 p-2 small">
+                                {% for error in form.avatar.errors %}
+                                <div><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</div>
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
 
@@ -194,72 +204,3 @@
 </section>
 {% endblock %}
 
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Gestion de l'aperçu d'avatar
-        const avatarInput = document.getElementById('{{ form.avatar.id_for_label }}');
-        const avatarPreview = document.getElementById('avatarPreview');
-        const avatarContainer = document.querySelector('.edit-avatar-container');
-
-        // Clic sur l'avatar pour ouvrir le sélecteur de fichier
-        if (avatarContainer) {
-            avatarContainer.addEventListener('click', function () {
-                avatarInput.click();
-            });
-
-            avatarContainer.style.cursor = 'pointer';
-        }
-
-        // Aperçu de l'image sélectionnée
-        if (avatarInput) {
-            avatarInput.addEventListener('change', function (e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        if (avatarPreview.tagName === 'IMG') {
-                            avatarPreview.src = e.target.result;
-                        } else {
-                            // Remplacer le div par une image
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.alt = 'Aperçu avatar';
-                            img.className = 'profile-avatar-image';
-                            img.id = 'avatarPreview';
-                            avatarPreview.parentNode.replaceChild(img, avatarPreview);
-                        }
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        // Compteur de caractères pour la biographie
-        const bioTextarea = document.getElementById('{{ form.bio.id_for_label }}');
-        const bioCounter = document.querySelector('.bio-counter');
-
-        if (bioTextarea && bioCounter) {
-            function updateBioCounter() {
-                const currentLength = bioTextarea.value.length;
-                const maxLength = 500;
-
-                bioCounter.textContent = currentLength + '/' + maxLength + ' caractères';
-
-                // Changer la couleur selon le nombre de caractères
-                bioCounter.classList.remove('text-muted', 'text-warning', 'text-danger');
-                if (currentLength > maxLength) {
-                    bioCounter.classList.add('text-danger');
-                } else if (currentLength > maxLength * 0.9) {
-                    bioCounter.classList.add('text-warning');
-                } else {
-                    bioCounter.classList.add('text-muted');
-                }
-            }
-
-            bioTextarea.addEventListener('input', updateBioCounter);
-            updateBioCounter(); // Initialisation
-        }
-    });
-</script>
-{% endblock %}
